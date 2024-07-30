@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Clicker+Script&family=Poppins:ital,wght@0,200;1,200;1,300;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;700&display=swap');
+
+.badge:after{
+    /* content:attr(value); */
+    content: 4;
+    font-size:12px;
+    color: #fff;
+    background: red;
+    border-radius:50%;
+    padding: 0 5px;
+    position:relative;
+    left:-8px;
+    top:-10px;
+    opacity:0.9;
+}
+
+
+.logo span{
+    font-family: 'Dancing Script', 'Clicker Script',cursive;
+    font-size: 40px;
+}
+.logo::before{
+    content: ' ';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-bottom: 5px solid rgb(236, 122, 28);
+    border-left: 5px solid rgb(236, 122, 28);
+    bottom: -7px;
+    left: -15px;
+}
+ .logo::after{
+    content: ' ';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-top: 5px solid rgb(236, 122, 28);
+    border-right: 5px solid rgb(236, 122, 28);
+    top: -7px;
+    right: -15px;
+}

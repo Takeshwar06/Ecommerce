@@ -23,7 +23,7 @@ module.exports.createProduct = asyncHandler(async (req, res) => {
         }
 
         const productImageLocalPath = req.file?.path;
-
+        console.log(req.file)
         if (!productImageLocalPath) {
             throw new ApiError(400, "Product image file is required")
         }
@@ -59,6 +59,7 @@ module.exports.getAllProducts = asyncHandler(async (req, res) => {
     try {
         const products = await Product.find();
         console.log(products);
+        res.status(200).json( new ApiResponse(200, products, "succefully retrive data"));
     } catch (error) {
         throw new ApiError(500, error?.message || "Internal server error !!");
     }
@@ -89,7 +90,7 @@ module.exports.updateProductImage = asyncHandler(async (req, res) => {
             return next(new ApiError(404, "Product not found"));
         }
 
-        res.status(200).json(ApiResponse(200, updatedProduct, "Product image updated successfully"));
+        res.status(200).json(new ApiResponse(200, updatedProduct, "Product image updated successfully"));
 
     } catch (error) {
         throw new ApiError(500, error?.message || "Internal server error !!")
@@ -119,7 +120,7 @@ module.exports.updateProductDetails = asyncHandler(async (req, res) => {
         }
 
         res.status(200).json(
-            ApiResponse(200, updatedProduct, "Product updated successfully")
+            new ApiResponse(200, updatedProduct, "Product updated successfully")
         );
 
     } catch (error) {
@@ -137,7 +138,7 @@ module.exports.deleteProduct = asyncHandler(async (req, res) => {
         }
 
         return res.status(200).json(
-            ApiResponse(200, "Product deleted successfully")
+            new ApiResponse(200,{}, "Product deleted successfully")
         );
 
     } catch (error) {

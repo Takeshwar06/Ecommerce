@@ -37,7 +37,7 @@ module.exports.placeOrder = asyncHandler(async (req, res) => {
 
         // Save the order to the database
         const savedOrder = await newOrder.save();
-        return res.status(201).json(ApiResponse(201, savedOrder, 'Order placed successfully'));
+        return res.status(201).json(new ApiResponse(201, savedOrder, 'Order placed successfully'));
     } catch (error) {
         throw new ApiError(500, error?.message || "Internal server error !!");
     }
@@ -52,7 +52,7 @@ module.exports.getUserOrders = asyncHandler(async (req, res) => {
             .populate('orderItems.productId')  // Populate product details
             .exec();
 
-        return res.status(200).json(ApiResponse(200, orders, 'Orders retrieved successfully'));
+        return res.status(200).json(new ApiResponse(200, orders, 'Orders retrieved successfully'));
     } catch (error) {
         throw new ApiError(500, error?.message || "Internal server error !!");
     }
@@ -71,7 +71,7 @@ module.exports.getAllOrders = asyncHandler(async(req,res)=>{
         })
         .exec();
   
-      return res.status(200).json(ApiResponse(200, 'Orders retrieved successfully', orders));
+      return res.status(200).json(new ApiResponse(200, orders,'Orders retrieved successfully',));
     } catch (error) {
         throw new ApiError(500, error?.message || "Internal server error !!");
     }

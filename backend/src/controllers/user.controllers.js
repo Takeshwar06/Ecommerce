@@ -230,7 +230,7 @@ module.exports.addToCart = asyncHandler(async (req, res) => {
         // Save the user with the updated cart
         await user.save();
 
-        return res.status(200).json(ApiResponse(200,user.cart, 'Item added to cart successfully'));
+        return res.status(200).json(new ApiResponse(200, user.cart, 'Item added to cart successfully'));
     } catch (error) {
         throw new ApiError(401, error?.message || "Invalid refresh token")
     }
@@ -238,64 +238,84 @@ module.exports.addToCart = asyncHandler(async (req, res) => {
 
 module.exports.incrementCartItemQuantity = asyncHandler(async (req, res) => {
     try {
-      const { productId } = req.body;
-      const userId = req.user._id;
-  
-      const user = await User.findById(userId);
-      if (!user) {
-        throw new ApiError(404, 'User not found');
-      }
-  
-      // Find the cart item
-      const cartItem = user.cart.find(item => item.productId.toString() === productId);
-      if (!cartItem) {
-        throw new ApiError(404, 'Product not found in cart');
-      }
-  
-      // Increment the quantity
-      cartItem.quantity += 1;
-  
-      // Save the user
-      await user.save();
-  
-      return res.status(200).json(ApiResponse(200,user.cart, 'Cart item quantity incremented successfully'));
+        const { productId } = req.body;
+        const userId = req.user._id;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            throw new ApiError(404, 'User not found');
+        }
+
+        // Find the cart item
+        const cartItem = user.cart.find(item => item.productId.toString() === productId);
+        if (!cartItem) {
+            throw new ApiError(404, 'Product not found in cart');
+        }
+
+        // Increment the quantity
+        cartItem.quantity += 1;
+
+        // Save the user
+        await user.save();
+
+        return res.status(200).json(new ApiResponse(200, user.cart, 'Cart item quantity incremented successfully'));
     } catch (error) {
         throw new ApiError(401, error?.message || "Invalid refresh token")
     }
 })
-  
+
 module.exports.decrementCartItemQuantity = asyncHandler(async (req, res) => {
     try {
-      const { productId } = req.body;
-      const userId = req.user._id;
-  
-      // Find the user
-      const user = await User.findById(userId);
-      if (!user) {
-        throw new ApiError(404, 'User not found');
-      }
-  
-      // Find the cart item
-      const cartItem = user.cart.find(item => item.productId.toString() === productId);
-      if (!cartItem) {
-        throw new ApiError(404, 'Product not found in cart');
-      }
-  
-      // Decrement the quantity, ensuring it doesn't drop below 1
-      if (cartItem.quantity > 1) {
-        cartItem.quantity -= 1;
-      } else {
-        throw new ApiError(400, 'Quantity cannot be less than 1');
-      }
-  
-      // Save the user
-      await user.save();
-  
-      return res.status(200).json(ApiResponse(200, 'Cart item quantity decremented successfully', user.cart));
+        const { productId } = req.body;
+        const userId = req.user._id;
+
+        // Find the user
+        const user = await User.findById(userId);
+        if (!user) {
+            throw new ApiError(404, 'User not found');
+        }
+
+        // Find the cart item
+        const cartItem = user.cart.find(item => item.productId.toString() === productId);
+        if (!cartItem) {
+            throw new ApiError(404, 'Product not found in cart');
+        }
+
+        // Decrement the quantity, ensuring it doesn't drop below 1
+        if (cartItem.quantity > 1) {
+            cartItem.quantity -= 1;
+        } else {
+            throw new ApiError(400, 'Quantity cannot be less than 1');
+        }
+
+        // Save the user
+        await user.save();
+
+        return res.status(200).json(new ApiResponse(200, user.cart,'Cart item quantity decremented successfully'));
     } catch (error) {
         throw new ApiError(401, error?.message || "Invalid refresh token")
     }
 })
 
+module.exports.getCurrentUser = asyncHandler(async (req, res) => {
+    if (!req.user) {
+        throw new ApiError(404, 'User not found');
+    }
+    return res.status(200).json(
+        new ApiResponse(200,req.user,"")
+    )
+})
 
-
+module.exports.getCartItems = asyncHandler(async(req,res)=>{
+    try {
+        const user = await User.findById(req.user._id)
+        .populate('cart.productId')  // Populate product details
+        .exec();
+        if (!user) {
+            throw new ApiError(404, 'User not found');
+        }
+      return res.status(200).json(new ApiResponse(200, user.cart,'Cart Items retrieved successfully'));
+    } catch (error) {
+        throw new ApiError(401, error?.message || "Invalid refresh token")
+    }
+})
