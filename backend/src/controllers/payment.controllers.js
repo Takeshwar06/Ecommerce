@@ -4,7 +4,8 @@ const Payment = require("../models/payment.models");
 const ApiError = require('../utils/ApiError');
 const asyncHandler = require('../utils/asyncHandler');
 const Product = require("../models/product.models")
-const Order = require("../models/order.models")
+const Order = require("../models/order.models");
+const ApiResponse = require('../utils/ApiResponse');
 require("dotenv").config();
 
 module.exports.getkey = asyncHandler(async (req, res) => {
@@ -38,7 +39,7 @@ module.exports.paymentSuccess = asyncHandler(async (req, res) => {
     try {
         const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = req.body;
         const body = razorpay_order_id + "|" + razorpay_payment_id;
-        console.log(razorpay_order_id, razorpay_payment_id);
+
         if (!body) {
             throw new ApiError(400, "Invailid payment creadicial !!");
         }
@@ -62,13 +63,18 @@ module.exports.paymentSuccess = asyncHandler(async (req, res) => {
         }
 
         // Fetch product details and calculate order price
+        let newOrderItems = [];
         let orderPrice = 0;
         for (let item of orderItems) {
+            newOrderItems.push({
+                productId: item.productId._id,
+                quantity:item.quantity,
+            })
             const product = await Product.findById(item.productId._id);
             if (!product) {
-                throw new ApiError(404, `Product with ID ${item.productId} not found`);
+                throw new ApiError(404, `Product with ID ${item.productId._id} not found`);
             }
-            orderPrice += product.price * item.productId.quantity;
+            orderPrice += product.price * item.quantity;
         }
 
         //  TODO: first check payment and its status\
@@ -77,14 +83,14 @@ module.exports.paymentSuccess = asyncHandler(async (req, res) => {
         const newOrder = new Order({
             orderPrice,
             customer: customerId,
-            orderItems,
+            orderItems:newOrderItems,
             paymentStatus: "completed",
             razorpay_payment_id, razorpay_order_id, razorpay_signature 
         });
 
         // Save the order to the database
         const savedOrder = await newOrder.save();
-        return res.status(201).json(new ApiResponse(201, savedOrder, 'Order placed successfully'));
+        return res.status(201).json(new ApiResponse(201, {}, 'Order placed successfully'));
     } catch (error) {
         throw new ApiError(500, error?.message || "Internal server error !!")
     }

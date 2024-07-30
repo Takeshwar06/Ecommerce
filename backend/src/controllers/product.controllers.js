@@ -101,7 +101,7 @@ module.exports.updateProductDetails = asyncHandler(async (req, res) => {
     try {
 
         const { productName, description, price, stockQuantity } = req.body;
-        // console.log(productName, description, price, stockQuantity)
+        console.log("product details to update",productName, description, price, stockQuantity)
         if (
             [productName, description].some((field) => field?.trim() === "") ||
             !price || !stockQuantity

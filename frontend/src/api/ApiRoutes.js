@@ -21,4 +21,7 @@ export const deleteProduct = `${host}/api/v1/products/delete` // id
 
 export const getKey = `${host}/api/v1/payments/getkey`
 export const orderGenerate = `${host}/api/v1/payments/ordergenerate`
-export const paymentSuccess = `${host}/api/v1/payments/paymentsuccess`
+export const paymentSuccess = `${host}/api/v1/payments/paymentsuccess` // in this i handle the order placeing
+
+export const getUserOrders = `${host}/api/v1/orders/get-user-orders`
+export const getAllOrders = `${host}/api/v1/orders/get-all-orders`

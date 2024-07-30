@@ -25,6 +25,7 @@ export default function AddProduct() {
 
 
   const handleAddProduct = async () => {
+    if (Number(price) === NaN || Number(stockQuantity === NaN)) { return };
     if (
       [productName, price, stockQuantity, description].some((field) => field?.trim() === "") ||
       !productImage
