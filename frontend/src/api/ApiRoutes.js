@@ -1,4 +1,5 @@
-export const host="http://localhost:4000";
+//export const host="http://localhost:4000";
+export const host="https://ecommerce-server-flax.vercel.app"
 
 export const getCurrentUser = `${host}/api/v1/users/current-user`
 export const userRegister = `${host}/api/v1/users/register`
