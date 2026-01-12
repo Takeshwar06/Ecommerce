@@ -7,10 +7,7 @@ const paymentRoutes = require("./routes/payment.routes")
 const app = express();
 
 app.use(express.json());
-app.use(cors({
-    origin: process.env.CORS_ORIGIN,
-    credentials:true
-}))
+app.use(cors())
 
 app.use("/api/v1/users",userRoutes);
 app.use("/api/v1/products",productRoutes);
